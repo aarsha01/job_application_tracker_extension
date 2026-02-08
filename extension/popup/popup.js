@@ -383,10 +383,12 @@ function setupEventHandlers() {
 
     // Event type change (show/hide date)
     document.getElementById('event-type').addEventListener('change', (e) => {
+        console.log('Event type changed to:', e.target.value);
         const dateGroup = document.getElementById('event-date-group');
         if (e.target.value) {
             dateGroup.classList.remove('hidden');
             document.getElementById('event-date').value = new Date().toISOString().split('T')[0];
+            console.log('Date set to:', document.getElementById('event-date').value);
         } else {
             dateGroup.classList.add('hidden');
         }
@@ -412,8 +414,11 @@ function setupEventHandlers() {
             await updateApplication(selectedApplication.id, status, notes);
 
             // Add event if selected
+            console.log('Event values:', { eventType, eventDate });
             if (eventType && eventDate) {
-                await addEvent(selectedApplication.id, eventType, eventDate);
+                console.log('Adding event...');
+                const eventResult = await addEvent(selectedApplication.id, eventType, eventDate);
+                console.log('Event added:', eventResult);
             }
 
             showSuccess(document.getElementById('email-view'), 'Updated!');
@@ -426,6 +431,7 @@ function setupEventHandlers() {
                 renderSearchResults(searchApplications(query));
             }
         } catch (error) {
+            console.error('Update error:', error);
             showError('update-error', error.message || 'Failed to update');
         } finally {
             updateBtn.disabled = false;
