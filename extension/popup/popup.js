@@ -289,7 +289,6 @@ function selectApplication(appId) {
         `<option value="${s.value}" ${s.value === selectedApplication.status ? 'selected' : ''}>${s.value}</option>`
     ).join('');
     document.getElementById('update-notes').value = selectedApplication.notes || '';
-    document.getElementById('event-type').value = '';
 
     document.getElementById('update-section').classList.remove('hidden');
 }
@@ -390,8 +389,6 @@ function setupEventHandlers() {
 
         const status = document.getElementById('update-status').value;
         const notes = document.getElementById('update-notes').value;
-        const eventType = document.getElementById('event-type').value;
-        const eventDate = new Date().toISOString().split('T')[0]; // Use today's date
         const updateBtn = document.getElementById('update-btn');
 
         updateBtn.disabled = true;
@@ -399,11 +396,6 @@ function setupEventHandlers() {
 
         try {
             await updateApplication(selectedApplication.id, status, notes);
-
-            // Add event if selected
-            if (eventType) {
-                await addEvent(selectedApplication.id, eventType, eventDate);
-            }
 
             showSuccess(document.getElementById('email-view'), 'Updated!');
             document.getElementById('update-section').classList.add('hidden');
