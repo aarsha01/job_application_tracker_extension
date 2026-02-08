@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Job Application Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>Job Tracker</h1>
+            <p class="subtitle">Create your account</p>
+
+            <div id="error-message" class="error-message"></div>
+
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required
+                           pattern="[a-zA-Z0-9_]+"
+                           title="Username can only contain letters, numbers, and underscores"
+                           autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required
+                           minlength="6"
+                           autocomplete="new-password">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required
+                           minlength="6"
+                           autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="signup-btn">Create Account</button>
+            </form>
+
+            <p class="auth-link">
+                Already have an account? <a href="login.html">Sign in</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Check if already logged in
+        redirectIfLoggedIn();
+
+        // Handle signup form
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorDiv = document.getElementById('error-message');
+            const signupBtn = document.getElementById('signup-btn');
+
+            errorDiv.classList.remove('active');
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.classList.add('active');
+                return;
+            }
+
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating account...';
+
+            try {
+                await signUp(username, password);
+                // Auto-login after signup
+                await signIn(username, password);
+                window.location.href = 'index.html';
+            } catch (error) {
+                let message = error.message;
+                if (message.includes('already registered')) {
+                    message = 'This username is already taken';
+                }
+                errorDiv.textContent = message;
+                errorDiv.classList.add('active');
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+            }
+        });
+    </script>
+</body>
+</html>

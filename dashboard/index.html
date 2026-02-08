@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Job Application Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1>Job Application Tracker</h1>
+            <div class="user-info">
+                <span>Welcome, <strong id="username-display"></strong></span>
+                <button class="btn btn-secondary btn-small" id="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-label">Total Applications</div>
+                </div>
+                <div class="stat-card applied">
+                    <div class="stat-value" id="stat-applied">0</div>
+                    <div class="stat-label">Applied</div>
+                </div>
+                <div class="stat-card interview">
+                    <div class="stat-value" id="stat-interview">0</div>
+                    <div class="stat-label">In Interview</div>
+                </div>
+                <div class="stat-card offer">
+                    <div class="stat-value" id="stat-offer">0</div>
+                    <div class="stat-label">Offers</div>
+                </div>
+            </div>
+
+            <!-- Applications Table -->
+            <section class="applications-section">
+                <div class="section-header">
+                    <h2>Applications</h2>
+                    <div class="filters">
+                        <input type="text" id="search-input" placeholder="Search by company name...">
+                        <select id="filter-status">
+                            <option value="">All Statuses</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th>Source</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applications-tbody">
+                            <tr>
+                                <td colspan="6" class="empty-state">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Update Application Modal -->
+    <div class="modal" id="update-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Application</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="update-form">
+                    <input type="hidden" id="update-app-id">
+
+                    <div class="form-group">
+                        <label>Company</label>
+                        <p id="update-company" style="font-weight: 500;"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="update-status">Status</label>
+                        <select id="update-status" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="update-notes">Notes</label>
+                        <textarea id="update-notes" placeholder="Add any notes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Modal -->
+    <div class="modal" id="events-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Events - <span id="events-company"></span></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="events-app-id">
+
+                <div class="events-list" id="events-list">
+                    <p class="empty-state">Loading events...</p>
+                </div>
+
+                <h4 style="margin-bottom: 15px;">Add Event</h4>
+                <form id="add-event-form">
+                    <div class="form-group">
+                        <label for="event-type">Event Type</label>
+                        <select id="event-type" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-date">Date</label>
+                        <input type="date" id="event-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-notes">Notes</label>
+                        <textarea id="event-notes" placeholder="Add details about this event..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add Event</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div id="notification-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

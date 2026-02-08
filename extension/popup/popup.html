@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Tracker</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- Header -->
+        <header class="popup-header">
+            <h1>Job Tracker</h1>
+            <span id="current-domain" class="domain-badge"></span>
+        </header>
+
+        <!-- Login View -->
+        <div id="login-view" class="view">
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div id="login-error" class="error-message"></div>
+                <button type="submit" class="btn btn-primary" id="login-btn">Sign In</button>
+            </form>
+            <p class="auth-link">
+                <a href="#" id="open-signup">Create account</a> |
+                <a href="#" id="open-dashboard-login">Open Dashboard</a>
+            </p>
+        </div>
+
+        <!-- Job Site View (Add Application) -->
+        <div id="job-site-view" class="view hidden">
+            <div class="view-header">
+                <span class="view-icon">+</span>
+                <h2>Add Application</h2>
+            </div>
+            <form id="add-application-form">
+                <div class="form-group">
+                    <label for="company-name">Company Name</label>
+                    <input type="text" id="company-name" required placeholder="Enter company name">
+                </div>
+                <div class="form-group">
+                    <label for="applied-select">Did you apply?</label>
+                    <select id="applied-select">
+                        <option value="yes">Yes</option>
+                        <option value="no">No (Save for later)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="date-group">
+                    <label for="application-date">Application Date</label>
+                    <input type="date" id="application-date">
+                </div>
+                <div class="form-group">
+                    <label for="notes-input">Notes (optional)</label>
+                    <textarea id="notes-input" placeholder="Any notes about this application..."></textarea>
+                </div>
+                <div id="add-error" class="error-message"></div>
+                <button type="submit" class="btn btn-primary" id="add-btn">Add Application</button>
+            </form>
+        </div>
+
+        <!-- Email View (Search & Update) -->
+        <div id="email-view" class="view hidden">
+            <div class="view-header">
+                <span class="view-icon">@</span>
+                <h2>Update Application</h2>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-company" placeholder="Search by company name...">
+            </div>
+            <div id="search-results" class="search-results">
+                <p class="empty-message">Enter company name to search</p>
+            </div>
+
+            <!-- Update Form (shown when application selected) -->
+            <div id="update-section" class="hidden">
+                <h3 id="selected-company"></h3>
+                <form id="update-form">
+                    <div class="form-group">
+                        <label for="update-status">Status</label>
+                        <select id="update-status"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="update-notes">Notes</label>
+                        <textarea id="update-notes" placeholder="Add notes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-type">Add Event (optional)</label>
+                        <select id="event-type">
+                            <option value="">-- Select event --</option>
+                            <option value="Interview Scheduled">Interview Scheduled</option>
+                            <option value="Test Scheduled">Test Scheduled</option>
+                            <option value="Phone Screen">Phone Screen</option>
+                            <option value="Technical Interview">Technical Interview</option>
+                            <option value="HR Interview">HR Interview</option>
+                            <option value="Final Interview">Final Interview</option>
+                            <option value="Offer Discussion">Offer Discussion</option>
+                        </select>
+                    </div>
+                    <div id="event-date-group" class="form-group hidden">
+                        <label for="event-date">Event Date</label>
+                        <input type="date" id="event-date">
+                    </div>
+                    <div id="update-error" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary" id="update-btn">Update</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-update-btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Default View (No special site) -->
+        <div id="default-view" class="view hidden">
+            <div class="view-header">
+                <span class="view-icon">i</span>
+                <h2>Welcome!</h2>
+            </div>
+            <p class="info-text">
+                Visit a job site (LinkedIn, Indeed, etc.) to add applications, or check your email to update existing ones.
+            </p>
+            <div class="quick-stats" id="quick-stats">
+                <div class="stat">
+                    <span class="stat-value" id="total-apps">-</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="active-apps">-</span>
+                    <span class="stat-label">Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="popup-footer">
+            <a href="#" id="open-dashboard">Open Dashboard</a>
+            <span id="user-info" class="hidden">
+                <span id="current-user"></span>
+                <a href="#" id="logout-link">Logout</a>
+            </span>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="popup.js"></script>
+</body>
+</html>
