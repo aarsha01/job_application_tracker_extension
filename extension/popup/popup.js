@@ -290,7 +290,6 @@ function selectApplication(appId) {
     ).join('');
     document.getElementById('update-notes').value = selectedApplication.notes || '';
     document.getElementById('event-type').value = '';
-    document.getElementById('event-date-group').classList.add('hidden');
 
     document.getElementById('update-section').classList.remove('hidden');
 }
@@ -381,18 +380,6 @@ function setupEventHandlers() {
         document.getElementById('update-section').classList.add('hidden');
     });
 
-    // Event type change (show/hide date)
-    document.getElementById('event-type').addEventListener('change', (e) => {
-        console.log('Event type changed to:', e.target.value);
-        const dateGroup = document.getElementById('event-date-group');
-        if (e.target.value) {
-            dateGroup.classList.remove('hidden');
-            document.getElementById('event-date').value = new Date().toISOString().split('T')[0];
-            console.log('Date set to:', document.getElementById('event-date').value);
-        } else {
-            dateGroup.classList.add('hidden');
-        }
-    });
 
     // Update form
     document.getElementById('update-form').addEventListener('submit', async (e) => {
@@ -404,7 +391,7 @@ function setupEventHandlers() {
         const status = document.getElementById('update-status').value;
         const notes = document.getElementById('update-notes').value;
         const eventType = document.getElementById('event-type').value;
-        const eventDate = document.getElementById('event-date').value;
+        const eventDate = new Date().toISOString().split('T')[0]; // Use today's date
         const updateBtn = document.getElementById('update-btn');
 
         updateBtn.disabled = true;
@@ -414,11 +401,8 @@ function setupEventHandlers() {
             await updateApplication(selectedApplication.id, status, notes);
 
             // Add event if selected
-            console.log('Event values:', { eventType, eventDate });
-            if (eventType && eventDate) {
-                console.log('Adding event...');
-                const eventResult = await addEvent(selectedApplication.id, eventType, eventDate);
-                console.log('Event added:', eventResult);
+            if (eventType) {
+                await addEvent(selectedApplication.id, eventType, eventDate);
             }
 
             showSuccess(document.getElementById('email-view'), 'Updated!');
@@ -431,7 +415,6 @@ function setupEventHandlers() {
                 renderSearchResults(searchApplications(query));
             }
         } catch (error) {
-            console.error('Update error:', error);
             showError('update-error', error.message || 'Failed to update');
         } finally {
             updateBtn.disabled = false;
