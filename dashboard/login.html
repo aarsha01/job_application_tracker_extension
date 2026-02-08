@@ -60,6 +60,9 @@
             } catch (error) {
                 errorDiv.textContent = error.message || 'Invalid username or password';
                 errorDiv.classList.add('active');
+                // Clear password field on error
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
             } finally {
                 loginBtn.disabled = false;
                 loginBtn.textContent = 'Sign In';

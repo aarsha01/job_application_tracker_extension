@@ -69,6 +69,9 @@
             if (password !== confirmPassword) {
                 errorDiv.textContent = 'Passwords do not match';
                 errorDiv.classList.add('active');
+                document.getElementById('password').value = '';
+                document.getElementById('confirm-password').value = '';
+                document.getElementById('password').focus();
                 return;
             }
 
@@ -87,6 +90,10 @@
                 }
                 errorDiv.textContent = message;
                 errorDiv.classList.add('active');
+                // Clear password fields on error
+                document.getElementById('password').value = '';
+                document.getElementById('confirm-password').value = '';
+                document.getElementById('password').focus();
             } finally {
                 signupBtn.disabled = false;
                 signupBtn.textContent = 'Create Account';
