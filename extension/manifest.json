@@ -5,7 +5,8 @@
   "description": "Track your job applications across job boards and email",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "https://*/*",
