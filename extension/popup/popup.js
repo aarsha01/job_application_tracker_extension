@@ -520,8 +520,17 @@ async function initializeForCurrentSite() {
 }
 
 async function init() {
-    initSupabase();
+    // Set up event handlers FIRST (so links always work)
     setupEventHandlers();
+
+    // Then try to initialize Supabase
+    try {
+        initSupabase();
+    } catch (error) {
+        console.error('Supabase init error:', error);
+        showView('login');
+        return;
+    }
 
     // Check for existing session
     try {
