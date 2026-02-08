@@ -42,14 +42,14 @@ const STATUS_OPTIONS = [
 // INITIALIZE SUPABASE
 // ============================================
 
-let supabase;
+let supabaseClient;
 let currentUser = null;
 let currentDomain = null;
 let applications = [];
 let selectedApplication = null;
 
 function initSupabase() {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
 // ============================================
@@ -62,7 +62,7 @@ function usernameToEmail(username) {
 
 async function signIn(username, password) {
     const email = usernameToEmail(username);
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClientClient.auth.signInWithPassword({
         email: email,
         password: password
     });
@@ -71,7 +71,7 @@ async function signIn(username, password) {
 }
 
 async function signOut() {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabaseClientClient.auth.signOut();
     if (error) throw error;
     currentUser = null;
     showView('login');
@@ -79,7 +79,7 @@ async function signOut() {
 }
 
 async function getSession() {
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const { data: { session }, error } = await supabaseClientClient.auth.getSession();
     if (error) throw error;
     return session;
 }
@@ -142,7 +142,7 @@ function getDomainFromUrl(url) {
 
 async function loadApplications() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('applications')
             .select('*')
             .order('application_date', { ascending: false });
@@ -159,7 +159,7 @@ async function loadApplications() {
 async function addApplication(companyName, applied, applicationDate, notes, sourceDomain) {
     const status = applied ? 'Applied' : 'Saved';
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('applications')
         .insert({
             user_id: currentUser.id,
@@ -177,7 +177,7 @@ async function addApplication(companyName, applied, applicationDate, notes, sour
 }
 
 async function updateApplication(appId, status, notes) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('applications')
         .update({ status, notes })
         .eq('id', appId)
@@ -189,7 +189,7 @@ async function updateApplication(appId, status, notes) {
 }
 
 async function addEvent(applicationId, eventType, eventDate) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('application_events')
         .insert({
             application_id: applicationId,
