@@ -62,7 +62,7 @@ function usernameToEmail(username) {
 
 async function signIn(username, password) {
     const email = usernameToEmail(username);
-    const { data, error } = await supabaseClientClient.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: email,
         password: password
     });
@@ -71,7 +71,7 @@ async function signIn(username, password) {
 }
 
 async function signOut() {
-    const { error } = await supabaseClientClient.auth.signOut();
+    const { error } = await supabaseClient.auth.signOut();
     if (error) throw error;
     currentUser = null;
     showView('login');
@@ -79,7 +79,7 @@ async function signOut() {
 }
 
 async function getSession() {
-    const { data: { session }, error } = await supabaseClientClient.auth.getSession();
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
     if (error) throw error;
     return session;
 }
@@ -520,6 +520,9 @@ async function initializeForCurrentSite() {
 }
 
 async function init() {
+    // Show loading view immediately
+    showView('loading');
+
     // Set up event handlers FIRST (so links always work)
     setupEventHandlers();
 
