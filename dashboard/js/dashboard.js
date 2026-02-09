@@ -18,7 +18,15 @@ let currentUser = null;
 let applications = [];
 
 async function initDashboard() {
-    const session = await requireAuth();
+    // Check for tokens passed from extension via URL
+    const tokenSession = await checkUrlTokens();
+
+    // Use token session if available, otherwise check for existing session
+    let session = tokenSession;
+    if (!session) {
+        session = await requireAuth();
+    }
+
     if (!session) return;
 
     currentUser = session.user;

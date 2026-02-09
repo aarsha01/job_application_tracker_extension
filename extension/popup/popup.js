@@ -76,6 +76,15 @@ async function signOut() {
     currentUser = null;
     showView('login');
     document.getElementById('user-info').classList.add('hidden');
+
+    // Find and reload any open dashboard tabs to log them out too
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach(tab => {
+            if (tab.url && tab.url.includes(DASHBOARD_URL.replace(/\/$/, ''))) {
+                chrome.tabs.reload(tab.id);
+            }
+        });
+    });
 }
 
 async function getSession() {
@@ -421,10 +430,22 @@ function setupEventHandlers() {
     });
 
     // Open dashboard links
-    document.getElementById('open-dashboard').addEventListener('click', (e) => {
+    document.getElementById('open-dashboard').addEventListener('click', async (e) => {
         e.preventDefault();
         if (DASHBOARD_URL && DASHBOARD_URL !== 'YOUR_DASHBOARD_URL') {
-            chrome.tabs.create({ url: DASHBOARD_URL });
+            let url = DASHBOARD_URL;
+            // If logged in, pass session tokens
+            if (currentUser) {
+                const session = await getSession();
+                if (session && session.access_token) {
+                    const params = new URLSearchParams({
+                        access_token: session.access_token,
+                        refresh_token: session.refresh_token
+                    });
+                    url = `${DASHBOARD_URL}?${params.toString()}`;
+                }
+            }
+            chrome.tabs.create({ url });
         } else {
             alert('Dashboard URL not configured. Please update DASHBOARD_URL in popup.js');
         }
@@ -514,6 +535,22 @@ async function init() {
         console.error('Supabase init error:', error);
         showView('login');
         return;
+    }
+
+    // Check if logout happened from dashboard
+    try {
+        const result = await chrome.storage.local.get(['loggedOut', 'logoutTime']);
+        if (result.loggedOut) {
+            // Clear the flag
+            await chrome.storage.local.remove(['loggedOut', 'logoutTime']);
+            // Sign out from extension too
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            showView('login');
+            return;
+        }
+    } catch (e) {
+        console.error('Error checking logout flag:', e);
     }
 
     // Check for existing session

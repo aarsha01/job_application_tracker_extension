@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(() => {
     console.log('Job Application Tracker installed');
 });
 
-// Handle messages from popup
+// Handle messages from popup and content scripts
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'getCurrentTab') {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -16,5 +16,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         });
         return true; // Required for async sendResponse
+    }
+
+    // Handle logout from dashboard (via content script)
+    if (request.action === 'logout') {
+        // Set a flag in storage to indicate logout happened
+        chrome.storage.local.set({ loggedOut: true, logoutTime: Date.now() });
+        sendResponse({ success: true });
     }
 });
