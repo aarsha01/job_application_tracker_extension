@@ -10,6 +10,7 @@ CREATE TABLE applications (
     status TEXT NOT NULL DEFAULT 'Applied',
     source_domain TEXT,
     notes TEXT,
+    interview_date DATE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -66,6 +67,7 @@ CREATE POLICY "Users can delete own events" ON application_events
 -- Create index for faster queries
 CREATE INDEX idx_applications_user_id ON applications(user_id);
 CREATE INDEX idx_applications_status ON applications(status);
+CREATE INDEX idx_applications_interview_date ON applications(interview_date);
 CREATE INDEX idx_application_events_application_id ON application_events(application_id);
 
 -- Function to update the updated_at timestamp
